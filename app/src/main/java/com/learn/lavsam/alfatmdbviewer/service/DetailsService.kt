@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.learn.lavsam.alfatmdbviewer.model.data.MovieDTO
+import com.learn.lavsam.alfatmdbviewer.view.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.MalformedURLException
@@ -42,7 +43,8 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun loadMovie(id: Int) {
         try {
-            val uri = URL("https://api.themoviedb.org/3/movie/${id}?api_key=$API_KEY&language=$LANGUAGE")
+            val uri =
+                URL("https://api.themoviedb.org/3/movie/${id}?api_key=$API_KEY&language=$LANGUAGE")
             lateinit var urlConnection: HttpsURLConnection
             try {
                 urlConnection = uri.openConnection() as HttpsURLConnection
@@ -51,7 +53,8 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
                     urlConnection.readTimeout = REQUEST_TIMEOUT
                 }
                 val bufferedReader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                val movieDTO: MovieDTO = Gson().fromJson(getLines(bufferedReader), MovieDTO::class.java)
+                val movieDTO: MovieDTO =
+                    Gson().fromJson(getLines(bufferedReader), MovieDTO::class.java)
                 onResponse(movieDTO)
             } catch (e: Exception) {
                 onErrorRequest(e.message ?: "Empty error")
@@ -78,8 +81,11 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
         if (movieDTO == null) {
             onEmptyResponse()
         } else {
-            onSuccessResponse(movieDTO.id, movieDTO.original_title, movieDTO.overview, movieDTO.poster_path, movieDTO.backdrop_path,
-                movieDTO.release_date, movieDTO.title, movieDTO.vote_average, movieDTO.runtime)
+            onSuccessResponse(
+                movieDTO.id, movieDTO.title, movieDTO.poster_path, movieDTO.release_date,
+                movieDTO.vote_average, movieDTO.overview, movieDTO.backdrop_path, movieDTO.genre,
+                movieDTO.runtime
+            )
         }
     }
 
@@ -90,20 +96,19 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
 
 
     private fun onSuccessResponse(
-        id: Int?, original_title: String?, overview: String?, poster_path: String?,
-        backdrop_path: String?, release_date: String?, title: String?,
-        vote_average: Double?, runtime: Int?,
+        id: Int?, title: String?, poster_path: String?, release_date: Int?, vote_average: Double?,
+        overview: String?, backdrop_path: String?, genre: String?, runtime: Int?,
     ) {
         putLoadResult(DETAILS_RESPONSE_SUCCESS_EXTRA)
         broadcastIntent.putExtra(DETAILS_ID_MOVIE, id)
-        broadcastIntent.putExtra(DETAILS_ORIGINAL_TITLE, original_title)
         broadcastIntent.putExtra(DETAILS_TITLE, title)
-        broadcastIntent.putExtra(DETAILS_OVERVIEW, overview)
+        broadcastIntent.putExtra(DETAILS_POSTER_PATH, poster_path)
         broadcastIntent.putExtra(DETAILS_RELEASE_DATE, release_date)
         broadcastIntent.putExtra(DETAILS_VOTE_AVERAGE, vote_average)
-        broadcastIntent.putExtra(DETAILS_RUNTIME, runtime)
-        broadcastIntent.putExtra(DETAILS_POSTER_PATH, poster_path)
+        broadcastIntent.putExtra(DETAILS_OVERVIEW, overview)
         broadcastIntent.putExtra(DETAILS_BACKDROP_PATH, backdrop_path)
+        broadcastIntent.putExtra(DETAILS_GENRE, genre)
+        broadcastIntent.putExtra(DETAILS_RUNTIME, runtime)
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
     }
 

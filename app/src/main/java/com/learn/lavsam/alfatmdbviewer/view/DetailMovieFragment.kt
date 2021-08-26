@@ -23,12 +23,12 @@ const val DETAILS_INTENT_EMPTY_EXTRA = "DETAILS_INTENT_EMPTY_EXTRA"
 const val DETAILS_LOAD_RESULT_EXTRA = "DETAILS_LOAD_RESULT_EXTRA"
 const val DETAILS_DATA_EMPTY_EXTRA = "DETAILS_DATA_EMPTY_EXTRA"
 const val DETAILS_RESPONSE_SUCCESS_EXTRA = "DETAILS_RESPONSE_SUCCESS_EXTRA"
-const val DETAILS_ORIGINAL_TITLE = "DETAILS_ORIGINAL_TITLE"
 const val DETAILS_TITLE = "DETAILS_TITLE"
 const val DETAILS_OVERVIEW = "DETAILS_OVERVIEW"
 const val DETAILS_RELEASE_DATE = "DETAILS_RELEASE_DATE"
 const val DETAILS_VOTE_AVERAGE = "DETAILS_VOTE_AVERAGE"
 const val DETAILS_RUNTIME = "DETAILS_RUNTIME"
+const val DETAILS_GENRE = "DETAILS_GENRE"
 const val DETAILS_POSTER_PATH = "DETAILS_POSTER_PATH"
 const val DETAILS_BACKDROP_PATH = "DETAILS_BACKDROP_PATH"
 const val DETAILS_RESPONSE_EMPTY_EXTRA = "DETAILS_RESPONSE_EMPTY_EXTRA"
@@ -67,15 +67,14 @@ class DetailMovieFragment : Fragment() {
                 DETAILS_URL_MALFORMED_EXTRA -> TODO(PROCESS_ERROR)
                 DETAILS_RESPONSE_SUCCESS_EXTRA -> renderData(
                     MovieDTO(
-                        intent.getIntExtra(ID_MOVIE, INVALID_PROPERTY
-                        ),
-                        intent.getStringExtra(DETAILS_ORIGINAL_TITLE),
-                        intent.getStringExtra(DETAILS_OVERVIEW),
-                        intent.getStringExtra(DETAILS_POSTER_PATH),
-                        intent.getStringExtra(DETAILS_BACKDROP_PATH),
-                        intent.getStringExtra(DETAILS_RELEASE_DATE),
+                        intent.getIntExtra(ID_MOVIE, INVALID_PROPERTY),
                         intent.getStringExtra(DETAILS_TITLE),
+                        intent.getStringExtra(DETAILS_POSTER_PATH),
+                        intent.getIntExtra(DETAILS_RELEASE_DATE, INVALID_PROPERTY),
                         intent.getDoubleExtra(DETAILS_VOTE_AVERAGE, DEFAULT_DOUBLE_VALUE),
+                        intent.getStringExtra(DETAILS_OVERVIEW),
+                        intent.getStringExtra(DETAILS_BACKDROP_PATH),
+                        intent.getStringExtra(DETAILS_GENRE),
                         intent.getIntExtra(DETAILS_RUNTIME, DEFAULT_VALUE)
                     )
                 )
@@ -125,21 +124,21 @@ class DetailMovieFragment : Fragment() {
         detailedMovieView.visibility = View.VISIBLE
         detailedLoadingLayout.visibility = View.GONE
 
-        val originalTitle = movieDTO.original_title
         val title = movieDTO.title
         val overview = movieDTO.overview
         val releaseDate = movieDTO.release_date
         val runtime = movieDTO.runtime
         val voteAverage = movieDTO.vote_average.toString()
-        if (originalTitle == INVALID_PROPERTY_STRING || title == INVALID_PROPERTY_STRING || overview == INVALID_PROPERTY_STRING ||
-            releaseDate == INVALID_PROPERTY_STRING || runtime == INVALID_PROPERTY || voteAverage == INVALID_PROPERTY_STRING) {
+        if (title == INVALID_PROPERTY_STRING || overview == INVALID_PROPERTY_STRING ||
+            releaseDate == INVALID_PROPERTY || runtime == INVALID_PROPERTY || voteAverage == INVALID_PROPERTY_STRING) {
             TODO("Обработка ошибки")
         } else {
             val id = movieBundle.id
-            textViewTitle.text = movieDTO.original_title
+            textViewTitle.text = movieDTO.title
             textViewPlot.text = movieDTO.overview
             textViewReleased.text = movieDTO.release_date.toString()
             textViewRating.text = movieDTO.vote_average.toString()
+            textViewGenres.text = movieDTO.genre
             textViewRuntime.text = movieDTO.runtime.toString()
         }
     }

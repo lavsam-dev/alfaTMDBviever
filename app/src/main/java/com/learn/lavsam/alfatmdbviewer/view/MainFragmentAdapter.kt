@@ -33,10 +33,9 @@ class MainFragmentAdapter(private var onItemViewClickListener: MainFragment.OnIt
 
         fun bind(movie: Movie) = with(binding) {
             textViewPopularity.text = movie.vote_average.toString()
-            textViewTitle.text = movie.original_title
             textViewTitle.text = movie.title
             textViewYearOfRelease.text = movie.release_date.toString()
-            movie.poster_path?.let { imageViewPoster.setImageResource(it) }
+//            movie.poster_path?.let { imageViewPoster.setImageResource(it) }
             root.setOnClickListener { onItemViewClickListener?.onItemViewClick(movie) }
         }
     }
