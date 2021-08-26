@@ -33,7 +33,7 @@ class MainFragmentAdapter(private var onItemViewClickListener: MainFragment.OnIt
 
         fun bind(movie: Movie) = with(binding) {
             textViewPopularity.text = movie.vote_average.toString()
-            textViewOriginalTitle.text = movie.original_title
+            textViewTitle.text = movie.original_title
             textViewTitle.text = movie.title
             textViewYearOfRelease.text = movie.release_date.toString()
             movie.poster_path?.let { imageViewPoster.setImageResource(it) }
