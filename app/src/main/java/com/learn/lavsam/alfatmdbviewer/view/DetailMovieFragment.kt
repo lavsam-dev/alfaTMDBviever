@@ -12,11 +12,15 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.learn.lavsam.alfatmdbviewer.BuildConfig.BASE_URL_CONST
+import com.learn.lavsam.alfatmdbviewer.BuildConfig.IMAGE_SIZE_CONST
 import com.learn.lavsam.alfatmdbviewer.databinding.FragmentDetailedMovieBinding
 import com.learn.lavsam.alfatmdbviewer.model.data.Movie
 import com.learn.lavsam.alfatmdbviewer.model.data.MovieDTO
 import com.learn.lavsam.alfatmdbviewer.service.DetailsService
 import com.learn.lavsam.alfatmdbviewer.service.ID_MOVIE
+import com.squareup.picasso.BuildConfig
+import com.squareup.picasso.Picasso
 
 const val DETAILS_INTENT_FILTER = "DETAILS_INTENT_FILTER"
 const val DETAILS_INTENT_EMPTY_EXTRA = "DETAILS_INTENT_EMPTY_EXTRA"
@@ -41,6 +45,12 @@ private const val INVALID_PROPERTY = 0
 private const val INVALID_PROPERTY_STRING = "null"
 const val DEFAULT_VALUE = 0
 const val DEFAULT_DOUBLE_VALUE = 0.0
+
+//private const val IMAGE_SIZE = BuildConfig.IMAGE_SIZE_CONST
+//private const val BASE_URL = BuildConfig.BASE_URL_CONST
+
+private const val IMAGE_SIZE = "w500"
+private const val BASE_URL = "https://image.tmdb.org/t/p/"
 
 class DetailMovieFragment : Fragment() {
     private lateinit var binding: FragmentDetailedMovieBinding
@@ -70,7 +80,7 @@ class DetailMovieFragment : Fragment() {
                         intent.getIntExtra(ID_MOVIE, INVALID_PROPERTY),
                         intent.getStringExtra(DETAILS_TITLE),
                         intent.getStringExtra(DETAILS_POSTER_PATH),
-                        intent.getIntExtra(DETAILS_RELEASE_DATE, INVALID_PROPERTY),
+                        intent.getStringExtra(DETAILS_RELEASE_DATE),
                         intent.getDoubleExtra(DETAILS_VOTE_AVERAGE, DEFAULT_DOUBLE_VALUE),
                         intent.getStringExtra(DETAILS_OVERVIEW),
                         intent.getStringExtra(DETAILS_BACKDROP_PATH),
@@ -130,7 +140,7 @@ class DetailMovieFragment : Fragment() {
         val runtime = movieDTO.runtime
         val voteAverage = movieDTO.vote_average.toString()
         if (title == INVALID_PROPERTY_STRING || overview == INVALID_PROPERTY_STRING ||
-            releaseDate == INVALID_PROPERTY || runtime == INVALID_PROPERTY || voteAverage == INVALID_PROPERTY_STRING) {
+            releaseDate == INVALID_PROPERTY_STRING || runtime == INVALID_PROPERTY || voteAverage == INVALID_PROPERTY_STRING) {
             TODO("Обработка ошибки")
         } else {
             val id = movieBundle.id
@@ -140,6 +150,15 @@ class DetailMovieFragment : Fragment() {
             textViewRating.text = movieDTO.vote_average.toString()
             textViewGenres.text = movieDTO.genre
             textViewRuntime.text = movieDTO.runtime.toString()
+            Picasso
+                .get()
+                .load(BASE_URL + IMAGE_SIZE + movieDTO.poster_path)
+                .into(binding.imageViewPoster)
+
+            Picasso
+                .get()
+                .load(BASE_URL + IMAGE_SIZE + movieDTO.backdrop_path)
+                .into(binding.imageViewBackgroundPoster)
         }
     }
 

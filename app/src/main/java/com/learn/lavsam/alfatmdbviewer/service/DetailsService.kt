@@ -96,7 +96,7 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
 
 
     private fun onSuccessResponse(
-        id: Int?, title: String?, poster_path: String?, release_date: Int?, vote_average: Double?,
+        id: Int?, title: String?, poster_path: String?, release_date: String?, vote_average: Double?,
         overview: String?, backdrop_path: String?, genre: String?, runtime: Int?,
     ) {
         putLoadResult(DETAILS_RESPONSE_SUCCESS_EXTRA)

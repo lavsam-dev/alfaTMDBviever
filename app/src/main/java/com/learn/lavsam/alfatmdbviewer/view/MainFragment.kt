@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
         override fun onItemViewClick(movie: Movie) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
-                    .add(R.id.container, DetailMovieFragment.newInstance(Bundle().apply {
+                    .replace(R.id.container, DetailMovieFragment.newInstance(Bundle().apply {
                         putParcelable(DetailMovieFragment.BUNDLE_EXTRA, movie)
                     }))
                     .addToBackStack("")
@@ -58,7 +58,7 @@ class MainFragment : Fragment() {
         binding.mainFragmentRecyclerView.adapter = adapter
         val observer = Observer<AppState> { renderData(it) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
-        viewModel.getMovieFromWeb()
+        viewModel.getMovieFromWebSource()
     }
 
     private fun renderData(appState: AppState) {
@@ -74,7 +74,7 @@ class MainFragment : Fragment() {
                 binding.loadingLayout.visibility = View.GONE
                 binding.main.showSnackBar(getString(R.string.error_appstate),
                     getString(R.string.reload_appstate),
-                    { viewModel.getMovieFromWeb() })
+                    { viewModel.getMovieFromWebSource() })
             }
         }
     }

@@ -12,13 +12,11 @@ class MainViewModel(private val repository: Repository = RepositoryImpl()) : Vie
 
     private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
 
-    fun getData(): LiveData<AppState>{
-        return liveDataToObserve
-    }
+    fun getData(): LiveData<AppState> = liveDataToObserve
 
-    fun getMovieFromWeb() = getDataFromWeb()
+    fun getMovieFromWebSource() = getDataFromWebSource()
 
-    private fun getDataFromWeb() {
+    private fun getDataFromWebSource() {
         liveDataToObserve.value = AppState.Loading
         Thread {
             liveDataToObserve.postValue(AppState.Success(repository.getMovieFromWeb()))
