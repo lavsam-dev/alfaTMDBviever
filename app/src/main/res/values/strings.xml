@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">alfaTMDBviever</string>
+    <string name="LogTag">alfaTMDBViewer</string>
+    <string name="error_appstate">Error</string>
+    <string name="reload_appstate">Reload</string>
+    <string name="title">Title</string>
+    <string name="year_of_release">2020-05-06</string>
+    <string name="popularity">8.1</string>
+    <string name="genre">Action, Science Fiction, Adventure</string>
+</resources>
