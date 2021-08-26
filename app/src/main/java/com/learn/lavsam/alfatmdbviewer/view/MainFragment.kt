@@ -72,7 +72,7 @@ class MainFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.loadingLayout.visibility = View.GONE
-                binding.main.showSnackBar(getString(R.string.error_appstate),
+                binding.main.showSnackBarAction(getString(R.string.error_appstate),
                     getString(R.string.reload_appstate),
                     { viewModel.getMovieFromWebSource() })
             }

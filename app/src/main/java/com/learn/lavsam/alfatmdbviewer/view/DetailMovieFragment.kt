@@ -46,9 +46,6 @@ private const val INVALID_PROPERTY_STRING = "null"
 const val DEFAULT_VALUE = 0
 const val DEFAULT_DOUBLE_VALUE = 0.0
 
-//private const val IMAGE_SIZE = BuildConfig.IMAGE_SIZE_CONST
-//private const val BASE_URL = BuildConfig.BASE_URL_CONST
-
 private const val IMAGE_SIZE = "w500"
 private const val BASE_URL = "https://image.tmdb.org/t/p/"
 
