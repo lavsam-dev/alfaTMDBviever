@@ -3,6 +3,7 @@ package com.learn.lavsam.alfatmdbviewer.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.MainFragmentRecyclerItemBinding
 import com.learn.lavsam.alfatmdbviewer.model.data.Movie
 
@@ -35,7 +36,13 @@ class MainFragmentAdapter(private var onItemViewClickListener: MainFragment.OnIt
             textViewPopularity.text = movie.vote_average.toString()
             textViewTitle.text = movie.title
             textViewYearOfRelease.text = movie.release_date.toString()
-//            movie.poster_path?.let { imageViewPoster.setImageResource(it) }
+            when(movie.id) {
+                10401 -> imageViewPoster.setImageResource(R.drawable.the_girl_on_the_bridge_poster)
+                680 -> imageViewPoster.setImageResource(R.drawable.pulpfiction_poster)
+                9659 -> imageViewPoster.setImageResource(R.drawable.madmax_poster)
+                19124 -> imageViewPoster.setImageResource(R.drawable.blind_fury_poster)
+                10681 -> imageViewPoster.setImageResource(R.drawable.wall_e_poster)
+            }
             root.setOnClickListener { onItemViewClickListener?.onItemViewClick(movie) }
         }
     }

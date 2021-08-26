@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent?.action == Intent.ACTION_TIME_TICK) {
                     val currentTime = getCurrentTimeStamp()
-                    findViewById<TextView>(R.id.main).showToast("Recivied: " + currentTime)
+                    findViewById<TextView>(R.id.container).showToast("Recivied: " + currentTime)
                 }
             }
         }
