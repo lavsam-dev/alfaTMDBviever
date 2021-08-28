@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.learn.lavsam.alfatmdbviewer.BuildConfig
 import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.MainActivityBinding
 import com.learn.lavsam.alfatmdbviewer.service.MainBroadcastReceiver
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private val receiver = MainBroadcastReceiver()
+private const val MY_APPLICATION_ID = BuildConfig.APPLICATION_ID
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,7 +63,8 @@ class MainActivity : AppCompatActivity() {
         try {
             unregisterReceiver(tickReceiver)
         } catch (e: IllegalArgumentException) {
-            Log.d("MyBroadcast", "Time tick Receiver not registered", e)
+            val logTag = MY_APPLICATION_ID.substring(MY_APPLICATION_ID.lastIndexOf(".") + 1)
+            Log.d(logTag, "Time tick Receiver not registered", e)
         }
     }
 
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent?.action == Intent.ACTION_TIME_TICK) {
                     val currentTime = getCurrentTimeStamp()
-                    findViewById<TextView>(R.id.container).showToast("Recivied: " + currentTime)
+                    findViewById<TextView>(R.id.container).showToast(getString(R.string.receivied) + currentTime)
                 }
             }
         }

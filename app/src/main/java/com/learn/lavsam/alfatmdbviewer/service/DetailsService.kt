@@ -6,6 +6,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
+import com.learn.lavsam.alfatmdbviewer.BuildConfig
+import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.model.data.MovieDTO
 import com.learn.lavsam.alfatmdbviewer.view.*
 import java.io.BufferedReader
@@ -18,9 +20,10 @@ import javax.net.ssl.HttpsURLConnection
 private const val REQUEST_GET = "GET"
 private const val REQUEST_TIMEOUT = 10000
 const val ID_MOVIE = "ID"
-private const val API_KEY = "3d4eed70b3bf0c001506c22b79833ff1"
-private const val LANGUAGE = "en-US"
+private const val API_KEY = BuildConfig.TMDB_API_KEY
+private const val LANGUAGE = BuildConfig.LANGUAGE_CONST
 private const val DEFAULT_VALUE = 0
+private const val TMDB_URL_MOVIE_CONST = BuildConfig.TMDB_URL_MOVIE_CONST
 
 class DetailsService(name: String = "DetailService") : IntentService(name) {
 
@@ -44,7 +47,7 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
     private fun loadMovie(id: Int) {
         try {
             val uri =
-                URL("https://api.themoviedb.org/3/movie/${id}?api_key=$API_KEY&language=$LANGUAGE")
+                URL("$TMDB_URL_MOVIE_CONST${id}?api_key=$API_KEY&language=$LANGUAGE")
             lateinit var urlConnection: HttpsURLConnection
             try {
                 urlConnection = uri.openConnection() as HttpsURLConnection
@@ -57,7 +60,7 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
                     Gson().fromJson(getLines(bufferedReader), MovieDTO::class.java)
                 onResponse(movieDTO)
             } catch (e: Exception) {
-                onErrorRequest(e.message ?: "Empty error")
+                onErrorRequest(e.message ?: getString(R.string.tmdb_empty_error))
             } finally {
                 urlConnection.disconnect()
             }
@@ -116,7 +119,6 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
     private fun getLines(reader: BufferedReader): String {
         return reader.lines().collect(Collectors.joining("\n"))
     }
-
 
     private fun onEmptyData() {
         putLoadResult(DETAILS_DATA_EMPTY_EXTRA)

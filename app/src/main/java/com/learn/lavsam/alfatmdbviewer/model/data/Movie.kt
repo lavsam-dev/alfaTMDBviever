@@ -44,6 +44,12 @@ fun getMovieList() = listOf(
     ),
 
     Movie(
+        679, "Aliens", "", 1986, 9.1,
+        ".",
+        "Action, Thriller, Science Fiction", 137
+    ),
+
+    Movie(
         10681, "WALL·E", "", 2008, 7.4,
         ".",
         "Animation, Family, Science Fiction", 98

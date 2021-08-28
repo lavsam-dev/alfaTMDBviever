@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.learn.lavsam.alfatmdbviewer.model.AppState
 import com.learn.lavsam.alfatmdbviewer.model.repository.Repository
 import com.learn.lavsam.alfatmdbviewer.model.repository.RepositoryImpl
-import java.lang.Thread.sleep
 
 class MainViewModel(private val repository: Repository = RepositoryImpl()) : ViewModel() {
 
