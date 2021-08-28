@@ -1,12 +1,12 @@
 *.iml
 .gradle
 /local.properties
-/tmdb.propeties
-tmdb.propeties
+local.properties
+/tmdb.properties
+tmdb.properties
 .idea
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
-local.properties
