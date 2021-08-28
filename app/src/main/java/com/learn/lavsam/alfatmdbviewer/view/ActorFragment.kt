@@ -44,8 +44,8 @@ class ActorFragment : Fragment() {
         override fun onItemViewClick(actor: Actor) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
-                    .replace(R.id.container, DetailMovieFragment.newInstance(Bundle().apply {
-                        putParcelable(DetailMovieFragment.BUNDLE_EXTRA, actor)
+                    .replace(R.id.container, GoogleMapsFragment.newInstance(Bundle().apply {
+                        putParcelable(GoogleMapsFragment.BUNDLE_EXTRA, actor)
                     }))
                     .addToBackStack("")
                     .commitAllowingStateLoss()
