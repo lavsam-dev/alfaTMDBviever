@@ -11,4 +11,12 @@
     <string name="process_error">Обработка ошибки</string>
     <string name="receivied">Recivied: </string>
     <string name="log_message_recevied_not_registered">Time tick Receiver not registered</string>
+    <string name="list_movies">movies</string>
+    <string name="list_actors">actors</string>
+
+    <string name="default_address">Beirut</string>
+    <string name="button_search_map">Search</string>
+    <string name="marker_start">Start</string>
+    <string name="googlemaps">map</string>
+    <string name="textAdress">Адрес маркера</string>
 </resources>

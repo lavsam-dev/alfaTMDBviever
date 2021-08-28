@@ -34,6 +34,9 @@ class ActorFragmentAdapter(private var onItemViewClickListener: ActorFragment.On
 
         fun bind(actor: Actor) = with(binding) {
             actorName.text = actor.name
+            actorBirthday.text = actor.birthDay
+            actorPlaceOfBirth.text = actor.placeOfBirth
+            actorRating.text = actor.popularity.toString()
             when (actor.id) {
             }
             root.setOnClickListener { onItemViewClickListener?.onItemViewClick(actor) }
