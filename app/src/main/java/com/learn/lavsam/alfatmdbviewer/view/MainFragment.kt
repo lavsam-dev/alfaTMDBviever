@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.MainFragmentBinding
 import com.learn.lavsam.alfatmdbviewer.model.AppState
 import com.learn.lavsam.alfatmdbviewer.model.data.Movie
-import com.learn.lavsam.alfatmdbviewer.model.data.MovieDetail
 import com.learn.lavsam.alfatmdbviewer.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
@@ -34,8 +32,8 @@ class MainFragment : Fragment() {
         override fun onItemViewClick(movie: Movie) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
-                    .add(R.id.container, DetailedMovieFragment.newInstance(Bundle().apply {
-                        putParcelable(DetailedMovieFragment.BUNDLE_EXTRA, movie)
+                    .replace(R.id.container, DetailMovieFragment.newInstance(Bundle().apply {
+                        putParcelable(DetailMovieFragment.BUNDLE_EXTRA, movie)
                     }))
                     .addToBackStack("")
                     .commitAllowingStateLoss()
@@ -43,8 +41,10 @@ class MainFragment : Fragment() {
         }
     })
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,7 +58,7 @@ class MainFragment : Fragment() {
         binding.mainFragmentRecyclerView.adapter = adapter
         val observer = Observer<AppState> { renderData(it) }
         viewModel.getData().observe(viewLifecycleOwner, observer)
-        viewModel.getMovieFromWeb()
+        viewModel.getMovieFromWebSource()
     }
 
     private fun renderData(appState: AppState) {
@@ -72,8 +72,9 @@ class MainFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.loadingLayout.visibility = View.GONE
-                binding.main.showSnackBar(getString(R.string.error_appstate), getString(R.string.reload_appstate),
-                    { viewModel.getMovieFromWeb() })
+                binding.main.showSnackBarAction(getString(R.string.error_appstate),
+                    getString(R.string.reload_appstate),
+                    { viewModel.getMovieFromWebSource() })
             }
         }
     }

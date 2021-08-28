@@ -37,7 +37,7 @@
             android:layout_marginBottom="@dimen/item_margin"
             android:layout_marginStart="@dimen/item_margin"
             android:layout_marginEnd="@dimen/item_margin"
-            android:src="@drawable/pulpfiction_poster_wid"
+            android:src="@drawable/pulpfiction_backdrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_title" />

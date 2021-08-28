@@ -12,35 +12,40 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.learn.lavsam.alfatmdbviewer.BuildConfig
+import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.FragmentDetailedMovieBinding
 import com.learn.lavsam.alfatmdbviewer.model.data.Movie
 import com.learn.lavsam.alfatmdbviewer.model.data.MovieDTO
 import com.learn.lavsam.alfatmdbviewer.service.DetailsService
 import com.learn.lavsam.alfatmdbviewer.service.ID_MOVIE
+import com.squareup.picasso.Picasso
 
 const val DETAILS_INTENT_FILTER = "DETAILS_INTENT_FILTER"
 const val DETAILS_INTENT_EMPTY_EXTRA = "DETAILS_INTENT_EMPTY_EXTRA"
 const val DETAILS_LOAD_RESULT_EXTRA = "DETAILS_LOAD_RESULT_EXTRA"
 const val DETAILS_DATA_EMPTY_EXTRA = "DETAILS_DATA_EMPTY_EXTRA"
 const val DETAILS_RESPONSE_SUCCESS_EXTRA = "DETAILS_RESPONSE_SUCCESS_EXTRA"
-const val DETAILS_ORIGINAL_TITLE = "DETAILS_ORIGINAL_TITLE"
 const val DETAILS_TITLE = "DETAILS_TITLE"
 const val DETAILS_OVERVIEW = "DETAILS_OVERVIEW"
 const val DETAILS_RELEASE_DATE = "DETAILS_RELEASE_DATE"
 const val DETAILS_VOTE_AVERAGE = "DETAILS_VOTE_AVERAGE"
 const val DETAILS_RUNTIME = "DETAILS_RUNTIME"
+const val DETAILS_GENRE = "DETAILS_GENRE"
 const val DETAILS_POSTER_PATH = "DETAILS_POSTER_PATH"
 const val DETAILS_BACKDROP_PATH = "DETAILS_BACKDROP_PATH"
 const val DETAILS_RESPONSE_EMPTY_EXTRA = "DETAILS_RESPONSE_EMPTY_EXTRA"
 const val DETAILS_REQUEST_ERROR_EXTRA = "DETAILS_REQUEST_ERROR_EXTRA"
 const val DETAILS_REQUEST_ERROR_MESSAGE_EXTRA = "DETAILS_REQUEST_ERROR_MESSAGE_EXTRA"
 const val DETAILS_ID_MOVIE = "DETAILS_ID_MOVIE"
-private const val PROCESS_ERROR = "Обработка ошибки"
 const val DETAILS_URL_MALFORMED_EXTRA = "URL MALFORMED"
 private const val INVALID_PROPERTY = 0
 private const val INVALID_PROPERTY_STRING = "null"
 const val DEFAULT_VALUE = 0
 const val DEFAULT_DOUBLE_VALUE = 0.0
+
+private const val IMAGE_SIZE = BuildConfig.IMAGE_SIZE_CONST
+private const val BASE_URL = BuildConfig.BASE_URL_CONST
 
 class DetailMovieFragment : Fragment() {
     private lateinit var binding: FragmentDetailedMovieBinding
@@ -59,27 +64,20 @@ class DetailMovieFragment : Fragment() {
     private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.getStringExtra(DETAILS_LOAD_RESULT_EXTRA)) {
-                DETAILS_INTENT_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_DATA_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_RESPONSE_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_REQUEST_ERROR_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_REQUEST_ERROR_MESSAGE_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_URL_MALFORMED_EXTRA -> TODO(PROCESS_ERROR)
                 DETAILS_RESPONSE_SUCCESS_EXTRA -> renderData(
                     MovieDTO(
-                        intent.getIntExtra(ID_MOVIE, INVALID_PROPERTY
-                        ),
-                        intent.getStringExtra(DETAILS_ORIGINAL_TITLE),
-                        intent.getStringExtra(DETAILS_OVERVIEW),
-                        intent.getStringExtra(DETAILS_POSTER_PATH),
-                        intent.getStringExtra(DETAILS_BACKDROP_PATH),
-                        intent.getStringExtra(DETAILS_RELEASE_DATE),
+                        intent.getIntExtra(ID_MOVIE, INVALID_PROPERTY),
                         intent.getStringExtra(DETAILS_TITLE),
+                        intent.getStringExtra(DETAILS_POSTER_PATH),
+                        intent.getStringExtra(DETAILS_RELEASE_DATE),
                         intent.getDoubleExtra(DETAILS_VOTE_AVERAGE, DEFAULT_DOUBLE_VALUE),
+                        intent.getStringExtra(DETAILS_OVERVIEW),
+                        intent.getStringExtra(DETAILS_BACKDROP_PATH),
+                        intent.getStringExtra(DETAILS_GENRE),
                         intent.getIntExtra(DETAILS_RUNTIME, DEFAULT_VALUE)
                     )
                 )
-                else -> TODO(PROCESS_ERROR)
+                else -> TODO(getString(R.string.process_error))
             }
         }
     }
@@ -88,7 +86,8 @@ class DetailMovieFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(loadResultsReceiver, IntentFilter(DETAILS_INTENT_FILTER))
+            LocalBroadcastManager.getInstance(it)
+                .registerReceiver(loadResultsReceiver, IntentFilter(DETAILS_INTENT_FILTER))
         }
     }
 
@@ -125,22 +124,32 @@ class DetailMovieFragment : Fragment() {
         detailedMovieView.visibility = View.VISIBLE
         detailedLoadingLayout.visibility = View.GONE
 
-        val originalTitle = movieDTO.original_title
         val title = movieDTO.title
         val overview = movieDTO.overview
         val releaseDate = movieDTO.release_date
         val runtime = movieDTO.runtime
         val voteAverage = movieDTO.vote_average.toString()
-        if (originalTitle == INVALID_PROPERTY_STRING || title == INVALID_PROPERTY_STRING || overview == INVALID_PROPERTY_STRING ||
-            releaseDate == INVALID_PROPERTY_STRING || runtime == INVALID_PROPERTY || voteAverage == INVALID_PROPERTY_STRING) {
-            TODO("Обработка ошибки")
+        if (title == INVALID_PROPERTY_STRING || overview == INVALID_PROPERTY_STRING ||
+            releaseDate == INVALID_PROPERTY_STRING || runtime == INVALID_PROPERTY || voteAverage == INVALID_PROPERTY_STRING
+        ) {
+            TODO(getString(R.string.process_error))
         } else {
             val id = movieBundle.id
-            textViewTitle.text = movieDTO.original_title
+            textViewTitle.text = movieDTO.title
             textViewPlot.text = movieDTO.overview
             textViewReleased.text = movieDTO.release_date.toString()
             textViewRating.text = movieDTO.vote_average.toString()
+            textViewGenres.text = movieDTO.genre
             textViewRuntime.text = movieDTO.runtime.toString()
+            Picasso
+                .get()
+                .load(BASE_URL + IMAGE_SIZE + movieDTO.poster_path)
+                .into(binding.imageViewPoster)
+
+            Picasso
+                .get()
+                .load(BASE_URL + IMAGE_SIZE + movieDTO.backdrop_path)
+                .into(binding.imageViewBackgroundPoster)
         }
     }
 
