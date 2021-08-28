@@ -4,21 +4,18 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.learn.lavsam.alfatmdbviewer.BuildConfig
 import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.MainActivityBinding
-import com.learn.lavsam.alfatmdbviewer.service.MainBroadcastReceiver
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val receiver = MainBroadcastReceiver()
 private const val MY_APPLICATION_ID = BuildConfig.APPLICATION_ID
+private const val DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private fun getCurrentTimeStamp(): String {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+            val simpleDateFormat = SimpleDateFormat(DATE_TIME_PATTERN, Locale.US)
             val now = Date()
             return simpleDateFormat.format(now)
         }
@@ -43,14 +40,6 @@ class MainActivity : AppCompatActivity() {
                 .replace(binding.container.id, MainFragment.newInstance())
                 .commitNow()
         }
-        registerReceiver(receiver, IntentFilter(ConnectivityManager.EXTRA_NO_CONNECTIVITY))
-    }
-
-    private fun addFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     override fun onResume() {
@@ -64,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             unregisterReceiver(tickReceiver)
         } catch (e: IllegalArgumentException) {
             val logTag = MY_APPLICATION_ID.substring(MY_APPLICATION_ID.lastIndexOf(".") + 1)
-            Log.d(logTag, "Time tick Receiver not registered", e)
+            Log.d(logTag, getString(R.string.log_message_recevied_not_registered), e)
         }
     }
 
@@ -73,14 +62,14 @@ class MainActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent?.action == Intent.ACTION_TIME_TICK) {
                     val currentTime = getCurrentTimeStamp()
-                    findViewById<TextView>(R.id.container).showToast(getString(R.string.receivied) + currentTime)
+                    findViewById<TextView>(R.id.container).showToast(getString(R.string.receivied) + " " + currentTime)
                 }
             }
         }
     }
 
     override fun onDestroy() {
-        unregisterReceiver(receiver)
+        unregisterReceiver(tickReceiver)
         super.onDestroy()
     }
 }

@@ -10,4 +10,5 @@
     <string name="tmdb_empty_error">Empty error</string>
     <string name="process_error">Обработка ошибки</string>
     <string name="receivied">Recivied: </string>
+    <string name="log_message_recevied_not_registered">Time tick Receiver not registered</string>
 </resources>
