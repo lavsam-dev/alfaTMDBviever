@@ -1,7 +1,6 @@
 package com.learn.lavsam.alfatmdbviewer.view
 
 import android.graphics.Color
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,15 +15,10 @@ import com.google.android.gms.maps.model.*
 import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.GoogleMapsFragmentBinding
 import com.learn.lavsam.alfatmdbviewer.model.data.Actor
-import kotlinx.android.synthetic.main.google_maps_fragment.*
 import java.io.IOException
 
-private const val MAPS_ZOOM = 15f
+private const val MAPS_ZOOM = 10f
 private const val MAPS_LINE_WIDTH = 5f
-
-// Beirut
-private const val INITIAL_PLACE_LATITUDE = 33.89491309445804
-private const val INITIAL_PLACE_LONGITUDE = 35.503766602426815
 
 class GoogleMapsFragment : Fragment() {
     private lateinit var map: GoogleMap
@@ -33,12 +27,18 @@ class GoogleMapsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         map = googleMap
-        val initialPlace = LatLng(INITIAL_PLACE_LATITUDE, INITIAL_PLACE_LONGITUDE)
-        googleMap.addMarker(
-            MarkerOptions().position(initialPlace).title(getString(R.string.marker_start))
+        val placeOfBirth = actorBundle.placeOfBirth.toString()
+        val initialPlace = searchLatLng(placeOfBirth)
+        map.addMarker(
+            MarkerOptions().position(initialPlace).title(placeOfBirth)
         )
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(initialPlace))
-        googleMap.setOnMapLongClickListener { latLng ->
+        map.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                initialPlace,
+                MAPS_ZOOM
+            )
+        )
+        map.setOnMapLongClickListener { latLng ->
             getAddressAsync(latLng)
             addMarkerToArray(latLng)
             drawLine()
@@ -67,7 +67,6 @@ class GoogleMapsFragment : Fragment() {
         actorBundle = arguments?.getParcelable<Actor>(BUNDLE_EXTRA) ?: Actor()
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-        initSearchByAddress(actorBundle.placeOfBirth.toString())
     }
 
     private fun getAddressAsync(location: LatLng) {
@@ -120,43 +119,21 @@ class GoogleMapsFragment : Fragment() {
         }
     }
 
-    private fun initSearchByAddress(searchString: String) {
-        binding.buttonSearch.setOnClickListener {
-            val geoCoder = Geocoder(it.context)
-//            val searchText = searchString
-            val searchText = binding.searchAddress.text.toString()
-            searchAddress.setText(searchText)
-            Thread {
-                try {
-                    val addresses = geoCoder.getFromLocationName(searchText, 1)
-                    if (addresses.size > 0) {
-                        goToAddress(addresses, it, searchText)
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }.start()
-        }
-    }
-
-    private fun goToAddress(
-        addresses: MutableList<Address>,
-        view: View,
-        searchText: String
-    ) {
-        val location = LatLng(
-            addresses.first().latitude,
-            addresses.first().longitude
-        )
-        view.post {
-            setMarker(location, searchText, R.drawable.ic_map_marker)
-            map.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    location,
-                    MAPS_ZOOM
+    private fun searchLatLng(searchString: String): LatLng {
+        val geoCoder = Geocoder(binding.root.context)
+        try {
+            val addresses = geoCoder.getFromLocationName(searchString, 1)
+            if (addresses.size > 0) {
+                val location = LatLng(
+                    addresses.first().latitude,
+                    addresses.first().longitude
                 )
-            )
+                return location
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+        return LatLng(0.0, 0.0)
     }
 
     companion object {

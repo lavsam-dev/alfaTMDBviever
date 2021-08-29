@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">alfaTMDBviever</string>
+    <string name="app_name">alfaTMDBviewer</string>
     <string name="LogTag">alfaTMDBViewer</string>
     <string name="error_appstate">Error</string>
     <string name="reload_appstate">Reload</string>
@@ -14,7 +14,7 @@
     <string name="list_movies">movies</string>
     <string name="list_actors">actors</string>
 
-    <string name="default_address">Beirut</string>
+    <string name="default_address">Самара</string>
     <string name="button_search_map">Search</string>
     <string name="marker_start">Start</string>
     <string name="googlemaps">map</string>
