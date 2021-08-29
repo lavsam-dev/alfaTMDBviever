@@ -6,8 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.learn.lavsam.alfatmdbviewer.BuildConfig
 import com.learn.lavsam.alfatmdbviewer.R
 import com.learn.lavsam.alfatmdbviewer.databinding.MainActivityBinding
@@ -71,5 +74,31 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         unregisterReceiver(tickReceiver)
         super.onDestroy()
+    }
+
+    private fun addFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack(null)
+            .commitAllowingStateLoss()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_actions, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_actions_item_list_movies -> {
+                addFragment(MainFragment())
+                return true
+            }
+            R.id.menu_actions_item_list_actors -> {
+                addFragment(ActorFragment())
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
