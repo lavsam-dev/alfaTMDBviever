@@ -1,25 +1,22 @@
 package com.learn.lavsam.alfatmdbviewer.cloudmessage
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.learn.lavsam.alfatmdbviewer.R
 
-public const val CHANNEL_ID = "CHANNEL_MAIN"
+const val CHANNEL_ID = "CHANNEL_MAIN"
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private var notificationId = 10
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        val title = remoteMessage.notification?.title ?: "Title"
-        val body = remoteMessage.notification?.body ?: "Body"
+        val title = remoteMessage.notification?.title ?: getString(R.string.notificationTitleByDefault)
+        val body = remoteMessage.notification?.body ?: getString(R.string.notificationMessageByDefault)
         showNotification(title, body)
     }
 
@@ -33,26 +30,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-//        notificationId++
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            createNotificationChannel(notificationManager)
-        }
-
+        notificationId++
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(notificationManager: NotificationManager) {
-        val channelName = "Channel Name"
-        val descriptionText = "Channel Description"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
-            description = descriptionText
-        }
-        notificationManager.createNotificationChannel(channel)
-    }
-
     override fun onNewToken(token: String) {
-        Log.d("FIREBASEMSG", token)
+        Log.d(getString(R.string.notificationLogTag), token)
     }
 }

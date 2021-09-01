@@ -19,4 +19,10 @@
     <string name="marker_start">Start</string>
     <string name="googlemaps">map</string>
     <string name="textAdress">Адрес маркера</string>
+    <string name="notificationTitleByDefault">Title</string>
+    <string name="notificationMessageByDefault">Body</string>
+    <string name="notificationLogTag">FIREBASEMSG</string>
+    <string name="notificationTokenFail">Fetching FCM registration token failed</string>
+    <string name="notificationChannelName">Channel name</string>
+    <string name="notificationDescription">Channel description</string>
 </resources>
