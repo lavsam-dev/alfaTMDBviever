@@ -1,18 +1,25 @@
 package com.learn.lavsam.alfatmdbviewer.view
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.learn.lavsam.alfatmdbviewer.BuildConfig
 import com.learn.lavsam.alfatmdbviewer.R
+import com.learn.lavsam.alfatmdbviewer.cloudmessage.CHANNEL_ID
 import com.learn.lavsam.alfatmdbviewer.databinding.MainActivityBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,6 +50,38 @@ class MainActivity : AppCompatActivity() {
                 .replace(binding.container.id, MainFragment.newInstance())
                 .commitNow()
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            createNotificationChannel(notificationManager)
+        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(
+                    getString(R.string.notificationLogTag),
+                    getString(R.string.notificationTokenFail),
+                    task.exception
+                )
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            val token = task.result
+            Log.d(getString(R.string.notificationLogTag), token!!)
+        })
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
+        val channelName = getString(R.string.notificationChannelName)
+        val descriptionText = getString(R.string.notificationDescription)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
+            description = descriptionText
+        }
+        notificationManager.createNotificationChannel(channel)
     }
 
     override fun onResume() {
